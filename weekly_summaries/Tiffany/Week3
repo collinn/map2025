@@ -1,0 +1,3 @@
+* Created an advanced HPC tutorial guide explaining how to run scalable R jobs using Bash + SLURM array jobs with parameter passing and job monitoring.
+* Added a .gitignore file configured to exclude .rds files from version control.
+* Created directory for weekly summary of activities
