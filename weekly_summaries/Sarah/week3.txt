@@ -1,0 +1,3 @@
+* figure out how to run array jobs on the HPC
+* update "Grinnell HPC Guide" pdf with new array info and edit the document
+* look through the map2025 repository
