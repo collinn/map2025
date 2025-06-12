@@ -33,12 +33,12 @@ createFits <- function(sidx) {
   newtime <- seq(0, 1600, by = 40)
   dat$dts <- dat$dts[time %in% newtime, ]
 
-  fit <- bdotsFit(data = dat$dts,
+  fit <- bfit(data = dat$dts,
                   y = "fixations",
                   group = "group",
                   subject = "id",
                   time = "time",
-                  curveType = logistic(),
+                  curveFun = logistic(),
                   cores = ccores,
                   cor = sidx$bdotscor)
   fit
@@ -59,15 +59,15 @@ print(paste0("starting index: ", idx))
 for (i in seq_len(N)) {
   fit <- createFits(sidx)
 
-  sm <- bdotsBoot(formula = fixations ~ group(A, B),
+  sm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = TRUE,
                   cores = ccores)$sigTime
 
-  mm <- bdotsBoot(formula = fixations ~ group(A, B),
+  mm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = FALSE,
                   cores = ccores)$sigTime
 
-  pm <- suppressMessages(bdotsBoot(formula = fixations ~ group(A, B),
+  pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                                    bdObj = fit, permutation = TRUE, skipDist = FALSE,
                                    cores = ccores))$sigTime
 
