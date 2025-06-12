@@ -1,3 +1,9 @@
 * figure out how to run array jobs on the HPC
 * update "Grinnell HPC Guide" pdf with new array info and edit the document
 * look through the map2025 repository
+* update function names in fwer simulations
+* get the rds files from running the fwer simulations
+* figure out how to install eyetrackSim and devtools on the HPC
+* figure out how to ssh into the hpc instead of putting the password
+* move files back using rsync
+* update the pdf 

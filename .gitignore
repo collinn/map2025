@@ -1,2 +1,10 @@
 .Rproj.user
 map2025.Rproj
+.Rhistory
+*@hpc.grinnell.edu
+.RData
+*.Rout
+*.out
+*.err
+rds_files
+prog_txt

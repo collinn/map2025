@@ -49,7 +49,7 @@ res <- vector("list", length = N)
 attr(res, "settings") <- sidx
 nn <- paste0("sim", idx)
 sf <- paste0("prog_txt/", nn, ".txt")
-rf <- paste0("40_rds_files/", nn, ".rds")
+rf <- paste0("rds_files/", nn, ".rds")
 
 ccores <- 4
 
