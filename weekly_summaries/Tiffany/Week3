@@ -3,3 +3,4 @@
 * Created directory for weekly summary of activities
 * Looked through the map2025 repository: Focused on the Argon repo for Functions.R, Fwer_sim.R, and median_per_comparison_error_rate_pltos.R
 * Installed required package (eyetrackSim)
+* Ran fwer_sim.R on my own terminal
