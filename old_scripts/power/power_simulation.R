@@ -25,7 +25,7 @@ createFits <- function(sidx, nit = 1000) {
                          pars = ppars,
                          TIME = seq(-1,1, by = 0.005))
 
-  fit <- bdotsFit(data = dat,
+  fit <- bfit(data = dat,
                   y = "fixations",
                   group = "group",
                   subject = "id",
@@ -35,11 +35,11 @@ createFits <- function(sidx, nit = 1000) {
                   cor = sidx$bcor)
 
 
-  sm <- bdotsBoot(formula = fixations ~ group(A, B),
+  sm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = TRUE, Niter = nit)$sigTime
-  mm <- bdotsBoot(formula = fixations ~ group(A, B),
+  mm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, Niter = nit)$sigTime
-  pm <- suppressMessages(bdotsBoot(formula = fixations ~ group(A, B),
+  pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, skipDist = TRUE, Niter = nit,
                   permutation = TRUE)$sigTime)
   list(singlemean = sm,
