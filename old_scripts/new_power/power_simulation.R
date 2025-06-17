@@ -3,6 +3,11 @@ library(bdots)
 library(eyetrackSim)
 
 # Combinations of parameters to test
+  # mm = many means
+  # ar = autocorrelation
+  # bcor = number of cores
+  # sigVal = alpha
+  # slope = slope of second line
 sds <- data.table(mm = rep(c(F, T, T, T, T), 2),
                   ar = rep(c(T, T, T, F, F), 2),
                   bcor = rep(c(T, T, F, T, F), 2),
@@ -15,6 +20,9 @@ idx <- as.numeric(commandArgs(TRUE))
 # Select the parameter set for this simulation run
 sidx <- sds[idx, ]
 
+#' Creates fits using generated data and bdots
+#' @param sidx set of parameters
+#' @param nit number of iterations
 createFits <- function(sidx, nit = 1000) {
 
   slp <- sidx$slope

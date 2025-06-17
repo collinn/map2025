@@ -3,6 +3,8 @@ library(eyetrackSim)
 library(xtable)
 library(data.table)
 
+#' Generates a power from an RDS file
+#' @param ff path to file
 getPowerTab <- function(ff) {
   rr <- readRDS(ff)
 
@@ -53,9 +55,6 @@ getPowerTab <- function(ff) {
 # File list and subsets
 ff <- list.files("rds_files", full.names = TRUE, pattern = "rds")
 ff <- ff[c(1, 3:10, 2)]
-
-# Use slope 0.25 subset
-ff <- ff[6:10]
 
 res <- lapply(ff, getPowerTab)
 
@@ -116,8 +115,7 @@ print(xtable(finalSummary, caption = "Summary of methods for Type II error",
 
 
 # Abbreviated table (slope=0.25, no bcor)
-tab_abr <- tab[c(1:6, 10:12)]
-tab_abr[, bcor := NULL]
+tab_abr <- tab[c(1:12)]
 
 digits_abr <- c(1,1,1,1,2,2,2,3,3,3)
 print(xtable(tab_abr, caption = "Power for methods", align = c("llllcccccc"),
