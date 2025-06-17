@@ -1,11 +1,15 @@
 #!/bin/bash
+#SBATCH --job-name=powerSim
+#SBATCH --array=1-3
+#SBATCH --output=log_%A_%a.out
+#SBATCH --error=log_%A_%a.err
+#SBATCH --time=01:00:00
+#SBATCH --mem=4G
+#SBATCH --cpus-per-task=2
 
-# run sims
-date +"%r"
-for i in {1..3}
-do
-        echo "sim $i"
-        R CMD BATCH --no-save --no-restore "--args $i" power_simulation.R .Rout
-done
-date +"%r"
-#R CMD BATCH --no-save --no-restore "--args $SGE_TASK_ID" power_simulation.R
+# Load R or set R library path
+# module load R         # <- only if your cluster uses modules
+export R_LIBS_USER=~/Rlibs
+
+# Run the script with current SLURM task ID
+Rscript ~/bdots_project/map2025/old_scripts/new_power/power_simulation.R $SLURM_ARRAY_TASK_ID
