@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 
+=======
+User Guide
+>>>>>>> 83112a16bf0dd1360e6290aefa6e276143ea3bab
 1. power_simulation.R
 This is the main simulation script. 
 This can be runned by the shell script (see 3. power_script.sh) and takes an index number (1–10) to decide which simulation condition to run. The output of the file is one `.rds` file with 1000 simulation results per condition.
