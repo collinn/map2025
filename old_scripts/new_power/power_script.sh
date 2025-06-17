@@ -9,7 +9,7 @@
 
 # Load R or set R library path
 # module load R         # <- only if your cluster uses modules
-export R_LIBS_USER=~/Rlibs
+export R_LIBS_USER=/data/home/yantiffa/R/x86_64-pc-linux-gnu-library/4.3
 
 # Run the script with current SLURM task ID
 Rscript ~/bdots_project/map2025/old_scripts/new_power/power_simulation.R $SLURM_ARRAY_TASK_ID
