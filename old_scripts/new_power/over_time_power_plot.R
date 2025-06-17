@@ -2,9 +2,11 @@ library(bdots)
 library(eyetrackSim)
 library(ggplot2)
 library(data.table)
-library(ggpubr)
 library(gridExtra)
 
+#' Computes logical vector indicating time points where difference is expected
+#' @param mm: A matrix of start and end times
+#' @return: A logical vector of length 401 (one per time point from -1 to 1) indicating presence of power.
 timetiePower <- function(mm) {
   time <- seq(-1, 1, length.out = 401)
   vec <- vector("numeric", length = length(time))
@@ -23,6 +25,7 @@ timetiePower <- function(mm) {
   return(rr)
 }
 
+# Plots raw power values over time using base R graphics from an RDS simulation result file
 getDiffSlices <- function(ff, ww) {
   rr <- readRDS(ff)
 
@@ -51,6 +54,7 @@ getDiffSlices <- function(ff, ww) {
          col = c("green", "black", "blue"), lty = 1, lwd = 1)
 }
 
+# Generates ggplot2 plots showing power over time, including helpful reference lines for expected timing
 getDiffSlicesgg <- function(ff, ww, leg = FALSE) {
   rr <- readRDS(ff)
 
