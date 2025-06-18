@@ -1,0 +1,5 @@
+* Cleaned up the code for power simulations and wrote documentation
+* Made a `new_scripts` directory
+* Ran the simulation without the HPC and determined that there is an 
+  issue with the permutations
+* Started cleaning other directories
