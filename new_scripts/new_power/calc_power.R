@@ -13,22 +13,25 @@ getPowerTab <- function(ff) {
   pm <- lapply(rr, `[[`, 3)
 
   powerdetector <- function(mm) {
+    # type 2 error if no difference detected
     if (is.null(mm)) return(-200)
 
     sm <- split(mm, row(mm))
 
-    if (length(sm) == 2) {
-      return(-100)
-    } else if (length(sm) == 1) {
-      res <- min(sm[[1]])
-      if (res < 0) {
+    # set current min
+    min <- min(sm[[1]])
+    
+    for (i in length(sm)) {
+      # type 1 error if difference detected before true difference
+      if (min(sm[[i]]) < 0) {
         return(-100)
-      } else {
-        return(res)
       }
-    } else {
-      stop("Unexpected input structure")
+      # reset min if current min is smaller than min
+      if (min > min(sm[[i]])) {
+        min <- min(sm[[i]])
+      }
     }
+    return(min)
   }
 
   smt <- vapply(sm, powerdetector, numeric(1))
