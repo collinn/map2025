@@ -15,23 +15,14 @@ getPowerTab <- function(ff) {
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
     if (is.null(mm)) return(-200)
-
-    sm <- split(mm, row(mm))
-
-    # set current min
-    min <- min(sm[[1]])
     
-    for (i in length(sm)) {
-      # type 1 error if difference detected before true difference
-      if (min(sm[[i]]) < 0) {
-        return(-100)
-      }
-      # reset min if current min is smaller than min
-      if (min > min(sm[[i]])) {
-        min <- min(sm[[i]])
-      }
+    # type 1 error if difference detected before true difference
+    if (min(mm) < 0) {
+      return(-100)
     }
-    return(min)
+    
+    # if no error occurred, return the first difference detected
+    return(min(mm))
   }
 
   smt <- vapply(sm, powerdetector, numeric(1))
@@ -81,9 +72,9 @@ res_sm <- res_sm[, ..cols_to_keep]
 res_mm <- res_mm[, ..cols_to_keep]
 res_pm <- res_pm[, ..cols_to_keep]
 
-res_sm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
-res_mm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
-res_pm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
+#res_sm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
+#res_mm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
+#res_pm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
 
 # Add method label columns
 res_sm <- cbind(Method = "Hom. Boot", res_sm)
