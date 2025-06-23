@@ -39,6 +39,6 @@ This script reads simulation result files (`.rds`), calculates summary statistic
 - Power for different testing methods
 
 5. rds_files/
---------------
+---------------
 This folder stores output files from simulation runs.  
 Each file is saved in R’s binary `.rds` format and contains results from multiple simulation iterations for a given simulation setting.
