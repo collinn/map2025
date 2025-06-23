@@ -1,0 +1,3 @@
+* Ran simulations without HPC and calculated average TIE, T2E, and power among
+  the three different methods
+* Analyzed the results from calc_power and compared them to the full rds file
