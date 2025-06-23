@@ -2,4 +2,6 @@
 * Made a `new_scripts` directory
 * Ran the simulation without the HPC and determined that there is an 
   issue with the permutations
-* Started cleaning other directories
+* Fixed the issue with permutations and improved the power calculation 
+  function in calc_power.R
+* Wrote a paragraph summarizing createPlineData and how it works
