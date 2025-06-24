@@ -1,0 +1,19 @@
+createPlineData Description:
+* Create a matrix of noisy data for the first group. The pre-period slope is
+  centered at zero, and the post-period slope is centered at 0.05 (by default)
+* If many means is false, then change the noisy data and set all pre-period
+  slopes to zero and all post-period slopes to 0.05 (again, these are the 
+  default values)
+* Make sure all the post-period slopes are positive
+* For each row in the matrix, label the appropriate ID and group and add
+  errors (either autocorrelated or normal)
+* Create a second group, this time with both pre and post slopes centered
+  around zero. 
+* Create a matrix of noisy data centered around zero (for both columns)
+    Note: it might make more sense to just have one column, since we might not
+          want group B to have any changes
+* If many means is false, set both slopes to zero
+* If the groups are paired, we know the IDs should match and the intercept
+  should be the same among the two lines (optional)
+* For each row in this matrix, label the appropriate ID and group and add 
+  errors (either autocorrelated or normal)
