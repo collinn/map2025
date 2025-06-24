@@ -41,7 +41,7 @@ createFits <- function(sidx, nit = 1000) {
                   group = "group",
                   subject = "id",
                   time = "time",
-                  curveType = plinePars(),
+                  curveFun = plinePars(),
                   cores = detectCores() - 1L,
                   cor = sidx$bcor)
 
