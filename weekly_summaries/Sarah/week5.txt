@@ -1,3 +1,6 @@
 * Ran simulations without HPC and calculated average TIE, T2E, and power among
   the three different methods
 * Analyzed the results from calc_power and compared them to the full rds file
+* Communicate with ITS to figure out how to get the HPC running
+* Analyze the power files to see if there are issues with data generation, 
+  population curve fitting, or power calculations
