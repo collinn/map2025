@@ -3,14 +3,33 @@ library(eyetrackSim)
 library(xtable)
 library(data.table)
 
-#' Generates a power from an RDS file
+#' Extracts the significant time
+#' chunks from the large RDS file
 #' @param ff path to file
-getPowerTab <- function(ff) {
+getSigTimes <- function(ff) {
   rr <- readRDS(ff)
-
+  
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
+  
+  smt <- lapply(sm, `[[`, "sigTime")
+  mmt <- lapply(mm, `[[`, "sigTime")
+  pmt <- lapply(pm, `[[`, "sigTime")
+  
+  list(smt, mmt, pmt)
+}
+
+#' Generates a power from an RDS file
+#' @param ff path to file
+getPowerTab <- function(ff) {
+  ## change parameter name to rr and comment out
+  ## the line below if running getSigTimes before
+  rr <- readRDS(ff)
+  
+  sm <- rr[[1]]
+  mm <- rr[[2]]
+  pm <- rr[[3]]
 
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
@@ -50,7 +69,9 @@ getPowerTab <- function(ff) {
 ff <- list.files("rds_files", full.names = TRUE, pattern = "rds")
 ff <- ff[c(1, 3:10, 2)]
 
-res <- lapply(ff, getPowerTab)
+## run if you have the whole RDS file, not just sigTimes
+#res1 <- lapply(ff, getSigTimes)
+res <- lapply(res1, getPowerTab)
 
 res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
 res_mm <- rbindlist(lapply(res, function(z) as.list(z$mm)))
