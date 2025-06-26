@@ -4,3 +4,5 @@
 * Communicate with ITS to figure out how to get the HPC running
 * Analyze the power files to see if there are issues with data generation, 
   population curve fitting, or power calculations
+* Run the simulations with the HPC extracting the entire objects along with 
+  sigTime and analyzed the results
