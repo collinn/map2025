@@ -6,3 +6,6 @@
   population curve fitting, or power calculations
 * Run the simulations with the HPC extracting the entire objects along with 
   sigTime and analyzed the results
+* Edit the piecewise data generation
+* Begin experimenting with vertical distance instead of horizontal distance
+  as measure of power
