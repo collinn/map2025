@@ -12,12 +12,13 @@ getSigTimes <- function(ff) {
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
+  slope <- lapply(rr, `[[`, 4)
   
   smt <- lapply(sm, `[[`, "sigTime")
   mmt <- lapply(mm, `[[`, "sigTime")
   pmt <- lapply(pm, `[[`, "sigTime")
   
-  list(smt, mmt, pmt)
+  list(smt, mmt, pmt, slope)
 }
 
 #' Generates a power from an RDS file
@@ -30,6 +31,7 @@ getPowerTab <- function(ff) {
   sm <- rr[[1]]
   mm <- rr[[2]]
   pm <- rr[[3]]
+  slope <- rr[[4]]
 
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
@@ -41,7 +43,10 @@ getPowerTab <- function(ff) {
     }
     
     # if no error occurred, return the first difference detected
-    return(min(mm))
+    #return(min(mm))
+    
+    ## ALTERNATIVE METHOD: calculate vertical distance
+    return (min(mm))*slope
   }
 
   smt <- vapply(sm, powerdetector, numeric(1))
@@ -71,7 +76,7 @@ ff <- ff[c(1, 3:10, 2)]
 
 ## run if you have the whole RDS file, not just sigTimes
 #res1 <- lapply(ff, getSigTimes)
-res <- lapply(res1, getPowerTab)
+res <- lapply(ff, getPowerTab)
 
 res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
 res_mm <- rbindlist(lapply(res, function(z) as.list(z$mm)))

@@ -23,7 +23,7 @@ sidx <- sds[idx, ]
 #' Creates fits using generated data and bdots
 #' @param sidx set of parameters
 #' @param nit number of iterations
-createFits <- function(sidx, nit = 1000) {
+createFits <- function(sidx, nit = 25) {
 
   slp <- sidx$slope
   ppars <- c(0, slp)
@@ -55,7 +55,8 @@ createFits <- function(sidx, nit = 1000) {
                   permutation = TRUE)$sigTime)
   list(singlemean = sm,
        manymean = mm,
-       permutation = pm)
+       permutation = pm,
+       slope = slp)
 }
 
 N <- 1000 # Number of simulations
