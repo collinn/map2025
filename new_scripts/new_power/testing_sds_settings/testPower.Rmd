@@ -1,0 +1,59 @@
+---
+title: "testingPower"
+author: "Sarah Deschamps"
+date: "2025-07-01"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bdots)
+library(eyetrackSim)
+library(ggplot2)
+sds <- expand.grid(mm = c(T,F),
+                   sigVal = c(0.025, 0.01),
+                   slope = c(0.025, 0.25))
+```
+
+For any given index
+```{r}
+idx <- 7
+sidx <- sds[idx,]
+slp <- sidx$slope
+ppars <- c(0, slp)
+dat <- createPlineData(manymeans = sidx$mm,
+                       ar1 = FALSE,
+                       distSig = sidx$sigVal,
+                       paired = FALSE,
+                       pars = ppars,
+                       TIME = seq(-1,1, by = 0.005))
+```
+
+Check the data
+```{r}
+ggplot(dat, aes(time, fixations, color = group)) + geom_point()
+```
+
+See if the generated line looks good
+```{r}
+fit <- bfit(data = dat,
+                y = "fixations",
+                group = "group",
+                subject = "id",
+                time = "time",
+                curveFun = plinePars(),
+                cores = detectCores() - 1L,
+                cor = FALSE)
+# they look quite different among different
+# trials
+# GROUP A
+plot(fit[1,])
+plot(fit[2,])
+plot(fit[3,])
+plot(fit[4,])
+# GROUP B
+plot(fit[26,])
+plot(fit[28,])
+# all the B's kinda look the same
+```
+
