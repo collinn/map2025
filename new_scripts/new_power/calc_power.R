@@ -12,13 +12,12 @@ getSigTimes <- function(ff) {
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
-  slope <- lapply(rr, `[[`, 4)
-  
+
   smt <- lapply(sm, `[[`, "sigTime")
   mmt <- lapply(mm, `[[`, "sigTime")
   pmt <- lapply(pm, `[[`, "sigTime")
   
-  list(smt, mmt, pmt, slope)
+  list(smt, mmt, pmt)
 }
 
 #' Generates a power from an RDS file
@@ -31,7 +30,7 @@ getPowerTab <- function(ff) {
   sm <- rr[[1]]
   mm <- rr[[2]]
   pm <- rr[[3]]
-  slope <- rr[[4]]
+  slope <- attributes(rr)$simsettings$slope
 
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
