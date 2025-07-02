@@ -42,9 +42,11 @@ createFits <- function(sidx, nit = 250) {
 
 
   sm <- bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, singleMeans = TRUE, Niter = nit)$sigTime
+                  bdObj = fit, singleMeans = TRUE, Niter = nit,
+                  permutation = FALSE)$sigTime
   mm <- bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, Niter = nit)$sigTime
+                  bdObj = fit, Niter = nit,
+                  permutation = FALSE)$sigTime
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, skipDist = TRUE, Niter = nit,
                   permutation = TRUE)$sigTime)
