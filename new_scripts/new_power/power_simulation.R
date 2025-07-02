@@ -2,22 +2,9 @@
 library(bdots)
 library(eyetrackSim)
 
-# Combinations of parameters to test
-  # mm = many means
-  # ar = autocorrelation
-  # bcor = number of cores
-  # sigVal = alpha
-  # slope = slope of second line
-#sds <- data.table(mm = rep(c(F, T, T, T, T), 2),
-#                  ar = rep(c(T, T, T, F, F), 2),
-#                  bcor = rep(c(T, T, F, T, F), 2),
-#                  sigVal = 0.05,
-#                  slope = rep(c(0.025, 0.25), each = 5))
-
-# idx now goes from 1-8, without ar or bcor
+# idx from 1-16
 sds <- expand.grid(mm = c(T,F),
-                   # remove ar for now (to run simulations faster)
-                   # ar = c(T,F), 
+                   ar = c(T,F), 
                    # remove bcor
                    sigVal = c(0.025, 0.01),
                    slope = c(0.025, 0.25))
