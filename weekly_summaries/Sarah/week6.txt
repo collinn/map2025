@@ -1,0 +1,4 @@
+* read paper and decided which parts were most important
+* experimented with plots for power
+* looked into errors in TIE, T2E, and power
+* ran simulations on the HPC to verify results
