@@ -70,8 +70,8 @@ getPowerTab <- function(ff) {
 }
 
 # File list and subsets
-ff <- list.files("rds_files", full.names = TRUE, pattern = "rds")
-ff <- ff[c(1, 3:10, 2)]
+ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/rds/", full.names = TRUE, pattern = "rds")
+#ff <- ff[c(1, 3:10, 2)]
 
 ## run if you have the whole RDS file, not just sigTimes
 #res1 <- lapply(ff, getSigTimes)
@@ -81,11 +81,14 @@ res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
 res_mm <- rbindlist(lapply(res, function(z) as.list(z$mm)))
 res_pm <- rbindlist(lapply(res, function(z) as.list(z$pm)))
 
-sds <- data.table(
-  mm = c(FALSE, TRUE, TRUE, TRUE, TRUE),
-  ar = c(TRUE, TRUE, TRUE, FALSE, FALSE),
-  bcor = c(TRUE, TRUE, FALSE, TRUE, FALSE)
-)
+sds <- expand.grid(mm = c(T,F),
+                   ar = c(T,F), 
+                   slope = c(0.025, 0.25))
+#sds <- data.table(
+#  mm = c(FALSE, TRUE, TRUE, TRUE, TRUE),
+#  ar = c(TRUE, TRUE, TRUE, FALSE, FALSE),
+#  bcor = c(TRUE, TRUE, FALSE, TRUE, FALSE)
+#)
 
 res_sm <- cbind(sds, res_sm)[order(mm, ar)]
 res_mm <- cbind(sds, res_mm)[order(mm, ar)]
