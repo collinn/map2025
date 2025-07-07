@@ -2,11 +2,11 @@
 library(bdots)
 library(eyetrackSim)
 
-# idx from 1-16
+# idx from 1-8
 sds <- expand.grid(mm = c(T,F),
                    ar = c(T,F), 
                    # remove bcor
-                   sigVal = c(0.025, 0.01),
+                   # sigVal always 0.05
                    slope = c(0.025, 0.25))
 
 # Get simulation index from command line arguments
@@ -25,8 +25,8 @@ createFits <- function(sidx, nit = 250) {
 
   ## only setting one of the times, generate piecewise linear data based on simulation parameters
   dat <- createPlineData(manymeans = sidx$mm,
-                         ar1 = FALSE, #sidx$ar,
-                         distSig = sidx$sigVal,
+                         ar1 = sidx$ar,
+                         distSig = 0.05,
                          paired = FALSE,
                          pars = ppars,
                          TIME = seq(-1,1, by = 0.005))
@@ -38,14 +38,14 @@ createFits <- function(sidx, nit = 250) {
                   time = "time",
                   curveFun = plinePars(),
                   cores = detectCores() - 1L,
-                  cor = FALSE) #sidx$bcor)
+                  cor = FALSE)
 
 
   sm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = TRUE, Niter = nit,
                   permutation = FALSE)$sigTime
   mm <- bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, Niter = nit,
+                  bdObj = fit, singleMeans = FALSE, Niter = nit,
                   permutation = FALSE)$sigTime
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, skipDist = TRUE, Niter = nit,
@@ -55,7 +55,7 @@ createFits <- function(sidx, nit = 250) {
        permutation = pm)
 }
 
-N <- 100 # Number of simulations
+N <- 20 # Number of simulations
 sims <- vector("list", length = N)
 attr(sims, "simsettings") <- sidx
 nn <- paste0("sim", idx)
