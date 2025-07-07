@@ -1,7 +1,6 @@
 library(bdots)
 library(eyetrackSim)
 library(xtable)
-library(data.table)
 
 #' Extracts the significant time
 #' chunks from the large RDS file
@@ -27,29 +26,28 @@ getPowerTab <- function(ff) {
   ## the line below if running getSigTimes before
   rr <- readRDS(ff)
   
-  sm <- rr[[1]]
-  mm <- rr[[2]]
-  pm <- rr[[3]]
+  sm <- lapply(rr, `[[`, 1)
+  mm <- lapply(rr, `[[`, 2)
+  pm <- lapply(rr, `[[`, 3)
   slope <- attributes(rr)$simsettings$slope
 
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
-    if (is.null(mm)) return(-200)
+    if (is.null(mm)) {
+      return(-200)
+    }
     
     # type 1 error if difference detected before true difference
     if (min(mm) < 0) {
       return(-100)
     }
     
-    # if no error occurred, return the first difference detected
-    #return(min(mm))
-    
-    ## ALTERNATIVE METHOD: calculate vertical distance
+    # calculate vertical distance
     return (min(mm))*slope
   }
 
-  smt <- vapply(sm, powerdetector, numeric(1))
-  mmt <- vapply(mm, powerdetector, numeric(1))
+  smt <- vapply(sm, powerdetector, numeric(1)) 
+  mmt <- vapply(mm, powerdetector, numeric(1)) 
   pmt <- vapply(pm, powerdetector, numeric(1))
 
   makeSummary <- function(vv) {
@@ -71,10 +69,7 @@ getPowerTab <- function(ff) {
 
 # File list and subsets
 ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/rds/", full.names = TRUE, pattern = "rds")
-#ff <- ff[c(1, 3:10, 2)]
 
-## run if you have the whole RDS file, not just sigTimes
-#res1 <- lapply(ff, getSigTimes)
 res <- lapply(ff, getPowerTab)
 
 res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
@@ -84,21 +79,16 @@ res_pm <- rbindlist(lapply(res, function(z) as.list(z$pm)))
 sds <- expand.grid(mm = c(T,F),
                    ar = c(T,F), 
                    slope = c(0.025, 0.25))
-#sds <- data.table(
-#  mm = c(FALSE, TRUE, TRUE, TRUE, TRUE),
-#  ar = c(TRUE, TRUE, TRUE, FALSE, FALSE),
-#  bcor = c(TRUE, TRUE, FALSE, TRUE, FALSE)
-#)
 
-res_sm <- cbind(sds, res_sm)[order(mm, ar)]
-res_mm <- cbind(sds, res_mm)[order(mm, ar)]
-res_pm <- cbind(sds, res_pm)[order(mm, ar)]
+res_sm <- cbind(sds, res_sm)[order(sds$mm, sds$ar), ]
+res_mm <- cbind(sds, res_mm)[order(sds$mm, sds$ar), ]
+res_pm <- cbind(sds, res_pm)[order(sds$mm, sds$ar), ]
 
 # Select relevant columns and round numeric columns
 cols_to_keep <- c(1:6, 8:10)
-res_sm <- res_sm[, ..cols_to_keep]
-res_mm <- res_mm[, ..cols_to_keep]
-res_pm <- res_pm[, ..cols_to_keep]
+res_sm <- res_sm[, cols_to_keep]
+res_mm <- res_mm[, cols_to_keep]
+res_pm <- res_pm[, cols_to_keep]
 
 #res_sm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
 #res_mm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
@@ -111,11 +101,11 @@ res_pm <- cbind(Method = "Perm", res_pm)
 
 # Combine all methods and label factors for readability
 tab <- rbind(res_sm, res_mm, res_pm)
-tab[, mm := ifelse(mm, "Yes", "No")]
-tab[, ar := ifelse(ar, "Yes", "No")]
-tab[, bcor := ifelse(bcor, "Yes", "No")]
+#tab[, mm := ifelse(mm, "Yes", "No")]
+#tab[, ar := ifelse(ar, "Yes", "No")]
+#tab[, bcor := ifelse(bcor, "Yes", "No")]
 
-tab <- tab[order(mm, ar, bcor)]
+tab <- tab[order(tab$Method, tab$ar),]
 
 digits <- c(1,1,1,1,1,2,2,2,3,3,3)
 print(xtable(tab, caption = "Power for methods", align = c("lllllcccccc"),
@@ -124,9 +114,9 @@ print(xtable(tab, caption = "Power for methods", align = c("lllllcccccc"),
 
 # Final summary table
 finalSummary <- rbind(
-  colMeans(res_sm[, 5:10]),
-  colMeans(res_mm[, 5:10]),
-  colMeans(res_pm[, 5:10])
+  colMeans(res_sm[, 5:10], na.rm = TRUE),
+  colMeans(res_mm[, 5:10], na.rm = TRUE),
+  colMeans(res_pm[, 5:10], na.rm = TRUE)
 ) |> as.data.table()
 
 finalSummary <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permutation"), finalSummary)
@@ -137,12 +127,12 @@ print(xtable(finalSummary, caption = "Summary of methods for Type II error",
 
 
 # Abbreviated table (slope=0.25, no bcor)
-tab_abr <- tab[c(1:12)]
+#tab_abr <- tab[c(1:12)]
 
-digits_abr <- c(1,1,1,1,2,2,2,3,3,3)
-print(xtable(tab_abr, caption = "Power for methods", align = c("llllcccccc"),
-             label = "tab:power_methods", digits = digits_abr),
-      include.rownames = FALSE)
+#digits_abr <- c(1,1,1,1,2,2,2,3,3,3)
+#print(xtable(tab_abr, caption = "Power for methods", align = c("llllcccccc"),
+#             label = "tab:power_methods", digits = digits_abr),
+#      include.rownames = FALSE)
 
 finalSummary_abr <- rbind(
   colMeans(res_sm[c(1,3,5), 5:10]),
