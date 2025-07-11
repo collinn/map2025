@@ -1,0 +1,3 @@
+* edit outline of paper
+* interpret power over time plots
+* read about the math behind bdots
