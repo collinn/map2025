@@ -19,37 +19,35 @@ library(tidyr)
 ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/rds/", full.names = TRUE, pattern = "rds")
 
 rlist <- lapply(ff, readRDS)
-rr <- readRDS(ff[[1]])
+#rr <- readRDS(ff[[1]])
 
 extractSigTimes <- function(rr) {
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
-  #smtimes <- lapply(sm, `[[`, "sigTime")
-  #mmtimes <- lapply(mm, `[[`, "sigTime")
-  #pmtimes <- lapply(pm, `[[`, "sigTime")
+
   smtime <- lapply(sm, `[[`, 1)
   mmtime <- lapply(mm, `[[`, 1)
   pmtime <- lapply(pm, `[[`, 1)
 
-  smdf <- as.data.frame(unlist(smtime))
-  mmdf <- as.data.frame(unlist(mmtime))
-  pmdf <- as.data.frame(unlist(pmtime))
+  smtime_na <- lapply(smtime, function(x) if (is.null(x)) NA else x)
+  smdf <- as.data.frame(smtime_na)
+  smdf <- t(smdf)
+  mmtime_na <- lapply(mmtime, function(x) if (is.null(x)) NA else x)
+  mmdf <- as.data.frame(mmtime_na)
+  pmtime_na <- lapply(pmtime, function(x) if (is.null(x)) NA else x)
+  pmdf <- as.data.frame(pmtime_na)
 
-  df <- data.frame(smdf, mmdf, pmdf)
-  df_long <- pivot_longer(df,
-                        cols = c(singlemeans,manymeans,permutation),
-                        names_to = "mean_type",
-                        values_to = "min_sig_time")
-  return(df_long)
+  lst <- list(smtime_na, mmtime_na, pmtime_na)
+  return(t(lst))
 }
 
-times <- lapply(rlist, extractSigTimes)
+times <- data.frame(lapply(rlist, extractSigTimes))
 
 
 #ggplot(data = df_long, aes(x = min_sig_time, color = mean_type)) + geom_density()
 
-ggplot(data = df_long, aes(x = min_sig_time, color = mean_type)) + stat_ecdf() + scale_color_manual(values = c("#0FA3B1", "#E07A5F", "#0A014F")) + xlim(min = -1.0, max = 1.0)
+ggplot(data = times, aes(x = min_sig_time, color = mean_type)) + stat_ecdf() + scale_color_manual(values = c("#0FA3B1", "#E07A5F", "#0A014F")) + xlim(min = -1.0, max = 1.0)
 ```
 
 ```{r calculate power}
