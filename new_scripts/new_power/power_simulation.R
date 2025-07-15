@@ -1,32 +1,27 @@
-# Run power simulations for different parameter settings using bdots and eyetrackSim packages
+## Run power simulations for different parameter settings using bdots and eyetrackSim packages
 library(bdots)
 library(eyetrackSim)
 
-# idx from 1-8
-sds <- expand.grid(mm = c(T,F),
-                   ar = c(T,F), 
-                   # remove bcor
-                   # sigVal always 0.05
-                   slope = c(0.025, 0.25))
+## idx from 1-4
+sds <- expand.grid(mm = c(T,F), ar = c(T,F))
 
-# Get simulation index from command line arguments
+## Get simulation index from command line arguments
 idx <- as.numeric(commandArgs(TRUE))
 
-# Select the parameter set for this simulation run
+## Select the parameter set for this simulation run
 sidx <- sds[idx, ]
 
 #' Creates fits using generated data and bdots
 #' @param sidx set of parameters
 #' @param nit number of iterations
 createFits <- function(sidx, nit = 250) {
+  ## Slopes for piecewise lines
+  ppars <- c(0, 0.25)
 
-  slp <- sidx$slope
-  ppars <- c(0, slp)
-
-  ## only setting one of the times, generate piecewise linear data based on simulation parameters
+  ## Generate piecewise linear data based on simulation parameters
   dat <- createPlineData(manymeans = sidx$mm,
                          ar1 = sidx$ar,
-                         distSig = 0.05,
+                         distSig = 0.025,
                          paired = FALSE,
                          pars = ppars,
                          TIME = seq(-1,1, by = 0.005))
@@ -48,7 +43,7 @@ createFits <- function(sidx, nit = 250) {
                   bdObj = fit, singleMeans = FALSE, Niter = nit,
                   permutation = FALSE)$sigTime
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, skipDist = TRUE, Niter = nit,
+                  bdObj = fit, skipDist = FALSE, Niter = nit,
                   permutation = TRUE)$sigTime)
   list(singlemean = sm,
        manymean = mm,

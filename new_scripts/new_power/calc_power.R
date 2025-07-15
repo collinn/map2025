@@ -99,11 +99,8 @@ res_sm <- cbind(Method = "Hom. Boot", res_sm)
 res_mm <- cbind(Method = "Het. Boot", res_mm)
 res_pm <- cbind(Method = "Perm", res_pm)
 
-# Combine all methods and label factors for readability
+# Combine all methods for readability
 tab <- rbind(res_sm, res_mm, res_pm)
-#tab[, mm := ifelse(mm, "Yes", "No")]
-#tab[, ar := ifelse(ar, "Yes", "No")]
-#tab[, bcor := ifelse(bcor, "Yes", "No")]
 
 tab <- tab[order(tab$Method, tab$ar),]
 
@@ -125,19 +122,10 @@ print(xtable(finalSummary, caption = "Summary of methods for Type II error",
              label = "tab:type_2_summary", digits = 3),
       include.rownames = FALSE)
 
-
-# Abbreviated table (slope=0.25, no bcor)
-#tab_abr <- tab[c(1:12)]
-
-#digits_abr <- c(1,1,1,1,2,2,2,3,3,3)
-#print(xtable(tab_abr, caption = "Power for methods", align = c("llllcccccc"),
-#             label = "tab:power_methods", digits = digits_abr),
-#      include.rownames = FALSE)
-
 finalSummary_abr <- rbind(
-  colMeans(res_sm[c(1,3,5), 5:10]),
-  colMeans(res_mm[c(1,3,5), 5:10]),
-  colMeans(res_pm[c(1,3,5), 5:10])
+  colMeans(res_sm[c(1,3,5), 5:10], na.rm = TRUE),
+  colMeans(res_mm[c(1,3,5), 5:10], na.rm = TRUE),
+  colMeans(res_pm[c(1,3,5), 5:10], na.rm = TRUE)
 ) |> as.data.table()
 
 finalSummary_abr <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permutation"), finalSummary_abr)

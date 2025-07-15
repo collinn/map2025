@@ -1,33 +1,23 @@
+## Run FWER simulations for different parameters using eyetrackSim and bdots
 library(eyetrackSim)
 library(bdots)
 
+## idx from 1-4
+sds <- expand.grid(mm = c(T,F), ar = c(T,F))
 
-
-sds <- expand.grid(bdotscor = c(TRUE, FALSE),
-                   ar1 = c(TRUE, FALSE),
-                   manymeans = c(FALSE, TRUE),
-                   paired = c(FALSE, TRUE),
-                   pairedType = 1)
-sds <- as.data.table(sds)
-sds <- sds[!(manymeans == FALSE & paired == TRUE), ]
-
-## Now need to make a pairedType 1/2
-dat <- sds[paired == TRUE, ]
-dat1 <- copy(dat)
-dat1$pairedType <- 2
-
-sds <- rbind(sds, dat1)
-
-
+## Get simulation index from command line arguments
 idx <- as.numeric(commandArgs(TRUE))
 
+## Select the parameter set for this simulation run
 sidx <- sds[idx, ]
 
+#' Creates fits using generated data and bdots
+#' @param sidx set of parameters
 createFits <- function(sidx) {
-  dat <- createData_feb(paired = sidx$paired,
-                    ar1 = sidx$ar1,
-                    manymeans = sidx$manymeans,
-                    pairedType = sidx$pairedType) # this is ignored if not paired
+  ## Generate data
+  dat <- createData_feb(paired = FALSE,
+                    ar1 = sidx$ar,
+                    manymeans = sidx$mm)
 
   ## Make them less reliable
   newtime <- seq(0, 1600, by = 40)
@@ -40,7 +30,7 @@ createFits <- function(sidx) {
                   time = "time",
                   curveFun = logistic(),
                   cores = ccores,
-                  cor = sidx$bdotscor)
+                  cor = FALSE)
   fit
 }
 
@@ -61,11 +51,11 @@ for (i in seq_len(N)) {
 
   sm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = TRUE,
-                  cores = ccores)$sigTime
+                  cores = ccores, permutation = FALSE)$sigTime
 
   mm <- bboot(formula = fixations ~ group(A, B),
                   bdObj = fit, singleMeans = FALSE,
-                  cores = ccores)$sigTime
+                  cores = ccores, permutation = FALSE)$sigTime
 
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                                    bdObj = fit, permutation = TRUE, skipDist = FALSE,

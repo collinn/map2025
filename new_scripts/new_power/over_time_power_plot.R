@@ -94,31 +94,36 @@ getDiffSlicesgg <- function(ff, ww, leg = FALSE) {
   return(pp)
 }
 
-sds <- data.table(mm = rep(c(FALSE, TRUE, TRUE, TRUE, TRUE), 2),
-                  ar = rep(c(TRUE, TRUE, TRUE, FALSE, FALSE), 2),
-                  bcor = rep(c(TRUE, TRUE, FALSE, TRUE, FALSE), 2),
-                  slope = rep(c(0.025, 0.25), each = 5))
+#sds <- data.table(mm = rep(c(FALSE, TRUE, TRUE, TRUE, TRUE), 2),
+#                  ar = rep(c(TRUE, TRUE, TRUE, FALSE, FALSE), 2),
+#                  bcor = rep(c(TRUE, TRUE, FALSE, TRUE, FALSE), 2),
+#                  slope = rep(c(0.025, 0.25), each = 5))
+
+sds <- expand.grid(mm = c(T,F),
+                   ar = c(T,F), 
+                   slope = c(0.025, 0.25))
 
 ff <- list.files("~/dissertation/writing/methodology/scripts/power/rds_files",
                  full.names = TRUE, pattern = "rds")
 ff <- ff[c(1, 3:10, 2)]
 
-pdf("../../img/type_two_err_time_slice.pdf", width = 5, height = 7.5)
+pdf("~/Desktop/2025-map/type_two_err_time_slice.pdf", width = 5, height = 7.5)
 par(mfrow = c(3, 1))
 getDiffSlices(ff[1], 1)
 getDiffSlices(ff[2], 2)
 getDiffSlices(ff[3], 3)
 dev.off()
 
-pdf("~/dissertation/writing/methodology/img/type_two_error_time_a.pdf", width = 5, height = 2.5)
+#pdf("~/dissertation/writing/methodology/img/type_two_error_time_a.pdf", width = 5, height = 2.5)
+pdf("~/Desktop/2025-map/type_two_error_time_a.pdf", width = 5, height = 2.5)
 print(getDiffSlicesgg(ff[1], 1, leg = FALSE))
 dev.off()
 
-pdf("~/dissertation/writing/methodology/img/type_two_error_time_b.pdf", width = 5, height = 2.5)
+pdf("~/Desktop/2025-map/type_two_error_time_b.pdf", width = 5, height = 2.5)
 print(getDiffSlicesgg(ff[2], 2, leg = FALSE))
 dev.off()
 
-pdf("~/dissertation/writing/methodology/img/type_two_error_time_c.pdf", width = 5, height = 2.5)
+pdf("~/Desktop/2025-map/type_two_error_time_c.pdf", width = 5, height = 2.5)
 print(getDiffSlicesgg(ff[3], 3, leg = FALSE))
 dev.off()
 
@@ -129,7 +134,7 @@ b8 <- getDiffSlicesgg(ff[8], 8, leg = FALSE)
 b9 <- getDiffSlicesgg(ff[9], 9, leg = FALSE)
 b10 <- getDiffSlicesgg(ff[10], 10, leg = TRUE)
 
-pdf("~/dissertation/writing/methodology/img/full_power_25.pdf", width = 7, height = 8.5)
+pdf("~/Desktop/2025-map/full_power_25.pdf", width = 7, height = 8.5)
 ggpubr::ggarrange(b6, b7, b8, b9, b10,
                   nrow = 3, ncol = 2,
                   common.legend = TRUE, legend = "bottom")
@@ -138,12 +143,12 @@ dev.off()
 # Single plot example
 b6_single <- getDiffSlicesgg(ff[9], 9, leg = TRUE) + ggtitle("Power Simulation")
 
-pdf("~/dissertation/defense/img/power_sample.pdf", width = 5, height = 5)
+pdf("~/Desktop/2025-map/power_sample.pdf", width = 5, height = 5)
 print(b6_single)
 dev.off()
 
 # Combine plots side by side
-pdf("~/dissertation/defense/img/method_image.pdf", width = 5, height = 3.5)
+pdf("~/Desktop/2025-map/method_image.pdf", width = 5, height = 3.5)
 pp <- getDiffSlicesgg(ff[1], 1)
 gridExtra::grid.arrange(pp, b6_single, nrow = 1)
 dev.off()
