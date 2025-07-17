@@ -15,7 +15,7 @@ sidx <- sds[idx, ]
 #' @param sidx set of parameters
 createFits <- function(sidx) {
   ## Generate data
-  dat <- createData_feb(paired = FALSE,
+  dat <- createData(paired = FALSE,
                     ar1 = sidx$ar,
                     manymeans = sidx$mm)
 
@@ -39,7 +39,7 @@ res <- vector("list", length = N)
 attr(res, "settings") <- sidx
 nn <- paste0("sim", idx)
 sf <- paste0("prog_txt/", nn, ".txt")
-rf <- paste0("rds_files/", nn, ".rds")
+rf <- paste0("fwer_rds/", nn, ".rds")
 
 ccores <- 4
 
