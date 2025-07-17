@@ -1,4 +1,6 @@
-createPlineData Description:
+createPlineData Description
+
+technical description:
 * Create a matrix of noisy data for the first group. The pre-period slope is
   centered at zero, and the post-period slope is centered at 0.05 (by default)
 * If many means is false, then change the noisy data and set all pre-period
@@ -17,3 +19,26 @@ createPlineData Description:
   should be the same among the two lines (optional)
 * For each row in this matrix, label the appropriate ID and group and add 
   errors (either autocorrelated or normal)
+  
+description for paper (!!!WORK IN PROGRESS!!!):
+
+To demonstrate the relationship between effect size and power, we
+simulated data from two groups whose mean structure is a piecewise
+linear function defined as follows:
+
+
+y = {b, t < 0
+     mx + b, t >= 0.
+     
+Group A: m ~ N(0.25, 0.05 or 0.025)
+Group B: m ~ N(0, 0.05 or 0.025)
+for both: b ~ N(0, 0.05 or 0.025)
+
+Settings either generate single means or many means. (** talk about what many
+means means in terms of the normal distribution**).
+Additionally, we generate data with and without autocorrelation. 
+
+
+
+
+

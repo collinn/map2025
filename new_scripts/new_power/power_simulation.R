@@ -2,9 +2,12 @@
 library(bdots)
 library(eyetrackSim)
 
-## idx from 1-5
-sds <- expand.grid(mm = c(T,F), ar = c(T,F), bcor = F)
-bcor_row <- data.frame(mm = F, ar = T, bcor = T)
+## idx from 1-9
+sds <- expand.grid(mm = c(T,F), 
+                   ar = c(T,F), 
+                   sigVal = c(0.025, 0.05), 
+                   bcor = F)
+bcor_row <- data.frame(mm = F, ar = T, sigVal = 0.05, bcor = T)
 sds <- rbind(bcor_row, sds)
 
 ## Get simulation index from command line arguments
@@ -23,7 +26,7 @@ createFits <- function(sidx, nit = 500) {
   ## Generate piecewise linear data based on simulation parameters
   dat <- createPlineData(manymeans = sidx$mm,
                          ar1 = sidx$ar,
-                         distSig = 0.025,
+                         distSig = sidx$sigVal,
                          paired = FALSE,
                          pars = ppars,
                          TIME = seq(-1,1, by = 0.005))
