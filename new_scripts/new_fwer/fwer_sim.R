@@ -37,8 +37,8 @@ createFits <- function(sidx) {
 }
 
 N <- 25
-res <- vector("list", length = N)
-attr(res, "settings") <- sidx
+sims <- vector("list", length = N)
+attr(sims, "settings") <- sidx
 nn <- paste0("sim", idx)
 sf <- paste0("prog_txt/", nn, ".txt")
 rf <- paste0("fwer_rds/", nn, ".rds")
@@ -52,18 +52,18 @@ for (i in seq_len(N)) {
   fit <- createFits(sidx)
 
   sm <- bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, singleMeans = TRUE,
-                  cores = ccores, permutation = FALSE)$sigTime
+              bdObj = fit, singleMeans = TRUE,
+              cores = ccores, permutation = FALSE)$sigTime
 
   mm <- bboot(formula = fixations ~ group(A, B),
-                  bdObj = fit, singleMeans = FALSE,
-                  cores = ccores, permutation = FALSE)$sigTime
+              bdObj = fit, singleMeans = FALSE,
+              cores = ccores, permutation = FALSE)$sigTime
 
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
-                                   bdObj = fit, permutation = TRUE, skipDist = FALSE,
-                                   cores = ccores))$sigTime
+                               bdObj = fit, permutation = TRUE, skipDist = FALSE,
+                               cores = ccores))$sigTime
 
-  res[[i]] <- list(singleMeans = sm,
+  sims[[i]] <- list(singleMeans = sm,
                    manyMeans = mm,
                    permutation = pm)
 
@@ -72,4 +72,4 @@ for (i in seq_len(N)) {
     print(msg)
   }
 }
-saveRDS(res, rf)
+saveRDS(sims, rf)
