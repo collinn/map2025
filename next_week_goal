@@ -1,0 +1,46 @@
+# For both
+
+organize results from sims i.e., plot and table R scripts
+
+# power simulation
+
+## what is the point?
+
+make some tables
+
+- description of data generation
+    - how many subjects in each group
+    - distribution of parameters
+    - autocorrelation?
+- details of metapars
+    - autocorrelation in bdots
+    - many/single means, etc, 
+ - details of results
+    - genearl conclusions
+    - comments on power comparisons
+    - ???
+ - README
+ - recreate plots to make them look nicer
+ - power plots should use proportion
+ 
+ # fwer
+ 
+ ## what is the point?
+ 
+ which settings are we keeping and why?
+    - demonstrate with and without AR for single mean
+    - handful for others
+ 
+- description of data generation
+    - how many subjects in each group
+    - distribution of parameters
+    - autocorrelation?
+- details of metapars
+    - autocorrelation in bdots
+    - many/single means, etc, 
+ - details of results
+    - genearl conclusions
+    - comments on power comparisons
+    - ???
+ - README
+ 
