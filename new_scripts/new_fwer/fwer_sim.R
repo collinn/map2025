@@ -2,8 +2,10 @@
 library(eyetrackSim)
 library(bdots)
 
-## idx from 1-4
-sds <- expand.grid(mm = c(T,F), ar = c(T,F))
+## idx from 1-5
+sds <- expand.grid(mm = c(T,F), ar = c(T,F), bcor = F)
+bcor_row <- data.frame(mm = F, ar = T, bcor = T)
+sds <- rbind(bcor_row, sds)
 
 ## Get simulation index from command line arguments
 idx <- as.numeric(commandArgs(TRUE))
@@ -30,7 +32,7 @@ createFits <- function(sidx) {
                   time = "time",
                   curveFun = logistic(),
                   cores = ccores,
-                  cor = FALSE)
+                  cor = sidx$bcor)
   fit
 }
 
