@@ -46,7 +46,7 @@ createFits <- function(sidx, nit = 250) {
                   bdObj = fit, skipDist = FALSE, Niter = nit,
                   permutation = TRUE)$sigTime)
   list(singlemean = sm,
-       manymean = mm,
+       manymeans = mm,
        permutation = pm)
 }
 
