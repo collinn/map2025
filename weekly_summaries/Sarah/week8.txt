@@ -1,3 +1,4 @@
 * prepare presentation for Wednesday
 * clean up simulation R files
 * interpret math in paper
+* run mini simulations on the HPC
