@@ -2,3 +2,5 @@
 * clean up simulation R files
 * interpret math in paper
 * run mini simulations on the HPC
+* change name of createData in eyetrackSim
+* run small simulation to test final settings for power and fwer
