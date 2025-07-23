@@ -68,7 +68,7 @@ getPowerTab <- function(ff) {
 }
 
 # File list and subsets
-ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/rds/", full.names = TRUE, pattern = "rds")
+ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/power_rds/", full.names = TRUE, pattern = "rds")
 
 res <- lapply(ff, getPowerTab)
 
@@ -76,16 +76,20 @@ res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
 res_mm <- rbindlist(lapply(res, function(z) as.list(z$mm)))
 res_pm <- rbindlist(lapply(res, function(z) as.list(z$pm)))
 
-sds <- expand.grid(mm = c(T,F),
-                   ar = c(T,F), 
-                   slope = c(0.025, 0.25))
+sds <- expand.grid(mm = c(T, F), 
+                   ar = c(T, F),
+                   slope = 0.1,
+                   sigVal = 0.05,
+                   bcor = F)
+bcor_row <- data.frame(mm = F, ar = T, slope = 0.1, sigVal = 0.05, bcor = T)
+sds <- rbind(bcor_row, sds)
 
 res_sm <- cbind(sds, res_sm)[order(sds$mm, sds$ar), ]
 res_mm <- cbind(sds, res_mm)[order(sds$mm, sds$ar), ]
 res_pm <- cbind(sds, res_pm)[order(sds$mm, sds$ar), ]
 
 # Select relevant columns and round numeric columns
-cols_to_keep <- c(1:6, 8:10)
+cols_to_keep <- c(1:2, 6:12)
 res_sm <- res_sm[, cols_to_keep]
 res_mm <- res_mm[, cols_to_keep]
 res_pm <- res_pm[, cols_to_keep]
@@ -123,9 +127,9 @@ print(xtable(finalSummary, caption = "Summary of methods for Type II error",
       include.rownames = FALSE)
 
 finalSummary_abr <- rbind(
-  colMeans(res_sm[c(1,3,5), 5:10], na.rm = TRUE),
-  colMeans(res_mm[c(1,3,5), 5:10], na.rm = TRUE),
-  colMeans(res_pm[c(1,3,5), 5:10], na.rm = TRUE)
+  colMeans(res_sm[, 5:10], na.rm = TRUE),
+  colMeans(res_mm[, 5:10], na.rm = TRUE),
+  colMeans(res_pm[, 5:10], na.rm = TRUE)
 ) |> as.data.table()
 
 finalSummary_abr <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permutation"), finalSummary_abr)

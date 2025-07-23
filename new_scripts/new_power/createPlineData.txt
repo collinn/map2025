@@ -38,7 +38,39 @@ Settings either generate single means or many means. (** talk about what many
 means means in terms of the normal distribution**).
 Additionally, we generate data with and without autocorrelation. 
 
+TAKE TWO (** WORK IN PROGRESS **):
 
+The power simulation will describe the relationship between effect size and 
+power by simulating piecewise data from two groups, whose mean structures are 
+defined as follows: 
 
+group A: y = {b, x < 0
+	      mx + b, x >= 0
+group B: y = b
 
+For both groups,
+b ~ N(0, 0.025 or 0.05)
+m ~ N(0.025, 0.025 or 0.05
 
+Several settings are shown in the simulation. The first distinguishes between 
+the "many means" structure and the "single means" structure. In the single 
+means structure, during each iteration of generating new data, the parameters 
+of the function stay constant and the only source of variance is the error 
+term. Meanwhile, the many means structure resamples function parameters from 
+a normal distribution for each iteration of data generation. This ensures 
+that within-group variability is accounted for in the simulation. 
+
+The second setting, autocorrelation, is set to true or false to distinguish 
+between IID and autocorrelated error terms. The third setting, bcor, takes 
+autocorrelation into account when fitting the data using the bdots package. 
+
+The results of this simulation tell us two things. If the method finds a 
+difference before x = 0, the method has committed a Type 1 error, since 
+the two b parameters were drawn from the same distribution, so there should 
+not be a statistical difference between the two groups. Alternatively, if 
+the method fails to find a difference after x = 0, the method has committed 
+a Type 2 error, since there should be a statistical difference between the 
+two groups. Thus, the simulation shows that although the two new 
+methods -- heterogeneous bootstrap and permutation -- are more conservative 
+in their estimations of confidence intervals, they still demonstrate power 
+to find true statistical differences.

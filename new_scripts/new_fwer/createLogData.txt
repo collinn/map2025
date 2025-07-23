@@ -1,0 +1,9 @@
+description for paper (!!! WORK IN PROGRESS!!!):
+To demonstrate the inflated TIE of the homogenous bootstrap method, we 
+create two logistic curves from the same distribution. We use a four-
+parameter logistic function, so we theta = (p, b, s, x), where p = peak,
+b = baseline, s = slope, x = crossover parameters. theta ~ N(mu_g, V_g) 
+under the many means assumption. Under the single means assumption,
+theta_i = theta_j for all i, j in the group.
+
+Error structure is either autocorrelated or IID. 
