@@ -6,7 +6,7 @@ library(bdots)
 ## idx from 1-5
 sds <- expand.grid(mm = c(T,F), # many-means/single-means parameter
                    ar = c(T,F), # AR(1) parameter
-                   bcor = F) # Bootstrap 
+                   bcor = F) # Bootstrap correlation
 bcor_row <- data.frame(mm = F, ar = T, bcor = T) # Additional parameter combo for bcor = T
 sds <- rbind(bcor_row, sds)
 
