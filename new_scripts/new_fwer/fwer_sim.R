@@ -2,9 +2,12 @@
 library(eyetrackSim)
 library(bdots)
 
+## The study examines 5 parameter combinations across different data generation conditions:
 ## idx from 1-5
-sds <- expand.grid(mm = c(T,F), ar = c(T,F), bcor = F)
-bcor_row <- data.frame(mm = F, ar = T, bcor = T)
+sds <- expand.grid(mm = c(T,F), # many-means/single-means parameter
+                   ar = c(T,F), # AR(1) parameter
+                   bcor = F) # Bootstrap 
+bcor_row <- data.frame(mm = F, ar = T, bcor = T) # Additional parameter combo for bcor = T
 sds <- rbind(bcor_row, sds)
 
 ## Get simulation index from command line arguments
@@ -36,37 +39,42 @@ createFits <- function(sidx) {
   fit
 }
 
-N <- 25
+N <- 25 # Number of replications/observations in each method
 sims <- vector("list", length = N)
 attr(sims, "settings") <- sidx
+
+# Create file/path names for info storage
 nn <- paste0("sim", idx)
 sf <- paste0("prog_txt/", nn, ".txt")
 rf <- paste0("fwer_rds/", nn, ".rds")
 
-ccores <- 4
-
+ccores <- 4 # number of CPU for parallel processing
 
 sink(file = sf)
-print(paste0("starting index: ", idx))
+print(paste0("starting index: ", idx)) # Print progress update
 for (i in seq_len(N)) {
   fit <- createFits(sidx)
-
+  
+  # sm: Single means bootstrap
   sm <- bboot(formula = fixations ~ group(A, B),
               bdObj = fit, singleMeans = TRUE,
               cores = ccores, permutation = FALSE)$sigTime
-
+  # mm = Many mean bootstrap
   mm <- bboot(formula = fixations ~ group(A, B),
               bdObj = fit, singleMeans = FALSE,
               cores = ccores, permutation = FALSE)$sigTime
 
+  # permutation = No bootstrap, data go through resampling
   pm <- suppressMessages(bboot(formula = fixations ~ group(A, B),
                                bdObj = fit, permutation = TRUE, skipDist = FALSE,
                                cores = ccores))$sigTime
-
+  
+  # Store results from all three methods for this observation
   sims[[i]] <- list(singleMeans = sm,
                    manyMeans = mm,
                    permutation = pm)
 
+  # Provides progress update every 10 iterations
   if (i %% 10 == 0) {
     msg <- paste0("index: ", idx, ", iteration: ", i)
     print(msg)
