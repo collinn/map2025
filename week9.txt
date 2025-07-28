@@ -2,3 +2,4 @@
     * we wanted the type 2 error rate to not be 0%
 * draft the power and FWER sections of the manuscript
 * update documentation for FWER simulation
+* start making plots for paper
