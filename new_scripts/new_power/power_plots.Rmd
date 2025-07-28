@@ -1,5 +1,5 @@
 ---
-title: "powerPlots"
+title: "power_plots"
 author: "Sarah Deschamps"
 date: "2025-07-03"
 output: pdf_document

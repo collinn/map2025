@@ -8,5 +8,5 @@ map2025.Rproj
 *.err
 rds_files
 prog_txt
-.DS_Store
-powerPlots.Rmd
+*.DS_Store
+

@@ -1,6 +1,7 @@
 library(bdots)
 library(eyetrackSim)
 library(xtable)
+library(dplyr)
 
 #' Extracts the significant time
 #' chunks from the large RDS file
@@ -29,7 +30,7 @@ getPowerTab <- function(ff) {
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
-  slope <- attributes(rr)$simsettings$slope
+  #slope <- attributes(rr)$simsettings$slope
 
   powerdetector <- function(mm) {
     # type 2 error if no difference detected
@@ -42,8 +43,8 @@ getPowerTab <- function(ff) {
       return(-100)
     }
     
-    # calculate vertical distance
-    return (min(mm))*slope
+    # horizontal distance
+    return (min(mm))
   }
 
   smt <- vapply(sm, powerdetector, numeric(1)) 
@@ -55,7 +56,7 @@ getPowerTab <- function(ff) {
     t2e <- mean(vv == -200)
     pwr <- 1 - mean(vv %in% c(-100, -200))
     ssm <- summary(vv[!(vv %in% c(-100, -200))])[c(1:3, 5:6)]
-    ssm <- c(tie, t2e, pwr, ssm)
+    ssm <- c(tie, t2e, pwr)#, ssm)
     names(ssm)[1:3] <- c("Type I Error", "Type II Error", "Power")
     ssm
   }
@@ -89,7 +90,7 @@ res_mm <- cbind(sds, res_mm)[order(sds$mm, sds$ar), ]
 res_pm <- cbind(sds, res_pm)[order(sds$mm, sds$ar), ]
 
 # Select relevant columns and round numeric columns
-cols_to_keep <- c(1:2, 6:12)
+cols_to_keep <- c(1:2, 5:8)
 res_sm <- res_sm[, cols_to_keep]
 res_mm <- res_mm[, cols_to_keep]
 res_pm <- res_pm[, cols_to_keep]
@@ -105,19 +106,21 @@ res_pm <- cbind(Method = "Perm", res_pm)
 
 # Combine all methods for readability
 tab <- rbind(res_sm, res_mm, res_pm)
+#tab <- tab[order(tab$Method, tab$ar),]
 
-tab <- tab[order(tab$Method, tab$ar),]
+# Replace booleans with strings
+tab <- tab %>% mutate(across(2:4, ~ ifelse(.x, "Yes", "No")))
 
 digits <- c(1,1,1,1,1,2,2,2,3,3,3)
-print(xtable(tab, caption = "Power for methods", align = c("lllllcccccc"),
-             label = "tab:power_methods", digits = digits),
+print(xtable(tab, caption = "Power for methods", 
+             label = "tab:power_methods"),
       include.rownames = FALSE)
 
 # Final summary table
 finalSummary <- rbind(
-  colMeans(res_sm[, 5:10], na.rm = TRUE),
-  colMeans(res_mm[, 5:10], na.rm = TRUE),
-  colMeans(res_pm[, 5:10], na.rm = TRUE)
+  colMeans(res_sm[, 5:7], na.rm = TRUE),
+  colMeans(res_mm[, 5:7], na.rm = TRUE),
+  colMeans(res_pm[, 5:7], na.rm = TRUE)
 ) |> as.data.table()
 
 finalSummary <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permutation"), finalSummary)
@@ -127,9 +130,9 @@ print(xtable(finalSummary, caption = "Summary of methods for Type II error",
       include.rownames = FALSE)
 
 finalSummary_abr <- rbind(
-  colMeans(res_sm[, 5:10], na.rm = TRUE),
-  colMeans(res_mm[, 5:10], na.rm = TRUE),
-  colMeans(res_pm[, 5:10], na.rm = TRUE)
+  colMeans(res_sm[, 5:7], na.rm = TRUE),
+  colMeans(res_mm[, 5:7], na.rm = TRUE),
+  colMeans(res_pm[, 5:7], na.rm = TRUE)
 ) |> as.data.table()
 
 finalSummary_abr <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permutation"), finalSummary_abr)
@@ -137,3 +140,20 @@ finalSummary_abr <- cbind(Method = c("Hom. Bootstrap", "Het. Bootstrap", "Permut
 print(xtable(finalSummary_abr, caption = "Summary of methods for Type II error",
              label = "tab:type_2_summary", digits = 3),
       include.rownames = FALSE)
+
+filter_ar <- function(tab) {
+  return(tab %>% filter(mm == FALSE))
+}
+
+arTab <- rbind(
+  filter_ar(res_sm),
+  filter_ar(res_mm),
+  filter_ar(res_pm))
+
+arTab <- arTab[order(-arTab$ar, -arTab$bcor),]
+arTab <- arTab %>% mutate(across(2:4, ~ ifelse(.x, "Yes", "No")))
+
+print(xtable(arTab, caption = "Autocorrelation"), include.rownames = FALSE)
+
+
+
