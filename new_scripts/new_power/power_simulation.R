@@ -5,10 +5,8 @@ library(eyetrackSim)
 ## idx from 1-5
 sds <- expand.grid(mm = c(T, F), 
                    ar = c(T, F),
-                   slope = 0.025,
-                   sigVal = 0.05,
                    bcor = F)
-bcor_row <- data.frame(mm = F, ar = T, slope = 0.1, sigVal = 0.05, bcor = T)
+bcor_row <- data.frame(mm = F, ar = T, bcor = T)
 sds <- rbind(bcor_row, sds)
 
 ## Get simulation index from command line arguments
@@ -21,7 +19,7 @@ sidx <- sds[idx, ]
 #' @param sidx set of parameters
 createFits <- function(sidx) {
   ## Slopes for piecewise lines
-  ppars <- c(0, 0.15)
+  ppars <- c(0, 0.25)
 
   ## Generate piecewise linear data based on simulation parameters
   dat <- createPlineData(manymeans = sidx$mm,
@@ -38,7 +36,7 @@ createFits <- function(sidx) {
                   time = "time",
                   curveFun = plinePars(),
                   cores = detectCores() - 1L,
-                  cor = FALSE)
+                  cor = sidx$bcor)
   fit
 }
 

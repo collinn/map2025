@@ -1,3 +1,4 @@
+# Calculate power using RDS files from the piecewise simulation
 library(bdots)
 library(eyetrackSim)
 library(xtable)
@@ -73,31 +74,21 @@ ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/power_rds/", 
 
 res <- lapply(ff, getPowerTab)
 
+# Separate sm, mm, and pm
 res_sm <- rbindlist(lapply(res, function(z) as.list(z$sm)))
 res_mm <- rbindlist(lapply(res, function(z) as.list(z$mm)))
 res_pm <- rbindlist(lapply(res, function(z) as.list(z$pm)))
 
+# Five simulation settings
 sds <- expand.grid(mm = c(T, F), 
                    ar = c(T, F),
-                   slope = 0.1,
-                   sigVal = 0.05,
                    bcor = F)
-bcor_row <- data.frame(mm = F, ar = T, slope = 0.1, sigVal = 0.05, bcor = T)
+bcor_row <- data.frame(mm = F, ar = T, bcor = T)
 sds <- rbind(bcor_row, sds)
 
 res_sm <- cbind(sds, res_sm)[order(sds$mm, sds$ar), ]
 res_mm <- cbind(sds, res_mm)[order(sds$mm, sds$ar), ]
 res_pm <- cbind(sds, res_pm)[order(sds$mm, sds$ar), ]
-
-# Select relevant columns and round numeric columns
-cols_to_keep <- c(1:2, 5:8)
-res_sm <- res_sm[, cols_to_keep]
-res_mm <- res_mm[, cols_to_keep]
-res_pm <- res_pm[, cols_to_keep]
-
-#res_sm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
-#res_mm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
-#res_pm[, 4:9] <- round(.SD, 3), .SDcols = 4:9
 
 # Add method label columns
 res_sm <- cbind(Method = "Hom. Boot", res_sm)
@@ -141,19 +132,10 @@ print(xtable(finalSummary_abr, caption = "Summary of methods for Type II error",
              label = "tab:type_2_summary", digits = 3),
       include.rownames = FALSE)
 
-filter_ar <- function(tab) {
-  return(tab %>% filter(mm == FALSE))
-}
-
-arTab <- rbind(
-  filter_ar(res_sm),
-  filter_ar(res_mm),
-  filter_ar(res_pm))
-
-arTab <- arTab[order(-arTab$ar, -arTab$bcor),]
-arTab <- arTab %>% mutate(across(2:4, ~ ifelse(.x, "Yes", "No")))
-
+# Demonstrate autocorrelation
+arTab <- tab %>% filter(ar == "Yes") %>% arrange(desc(bcor), mm)
 print(xtable(arTab, caption = "Autocorrelation"), include.rownames = FALSE)
 
-
-
+# Demonstrate differences between methods
+notarTab <- tab %>% filter(ar == "No") %>% arrange(desc(bcor), mm)
+print(xtable(notarTab, caption = "Power for Methods"), include.rownames = FALSE)

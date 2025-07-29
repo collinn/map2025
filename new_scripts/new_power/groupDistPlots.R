@@ -32,7 +32,7 @@ ggplot(dts, aes(time, true, group = id, alpha = sample)) +
 dev.off()
 
 ## Now do power
-PARS <- c(0, 0.15)
+PARS <- c(0, 0.25)
 dat <- createPlineData(n = 50, distSig = 0.05, pars = PARS,
                        TIME = seq(-1, 1, length.out = 401))
 dat$fixations <- NULL
@@ -65,12 +65,14 @@ dat <- dat %>%
 
 
 pdf("piecewise_distribution.pdf", width = 5, height = 4)
-ggplot(dat, aes(time, true, group = id, alpha = sample, color = Condition)) +
+ggplot(dat, aes(time, true, group = id, alpha = as.numeric(sample), color = Condition)) +
   geom_line(lwd = 2) +
-  scale_color_brewer(palette = "Set1")
+  scale_color_brewer(palette = "Set1") +
   #scale_alpha_discrete(range = c(0.15, 0.95), guide = "none") +
   theme_bw() + theme(legend.position = "bottom") +
-  labs(y = "", x = "Time") #+ ggtitle("Piecewise Distribution")
+  labs(y = "", x = "Time") +   #+ ggtitle("Piecewise Distribution")
+  scale_alpha(guide = "none") +
+  xlim(-0.5, 1)
 
 #ggplot(dat, aes(time, mean, group = id, alpha = sample, color = Condition, fill = Condition)) +
 #  geom_line() +
