@@ -23,12 +23,13 @@ td2$Condition <- "No Effect"
 
 dat <- rbind(td1, td2)
 
+theme_set(theme_bw(base_size = 16))
 plot1 <- ggplot(dat, aes(time, true, color = Condition, group = id)) + 
   geom_line(linewidth = 2) +
-  scale_color_brewer(palette = "Set1") +
+  #scale_color_brewer(palette = "Set1") +
   theme_bw() +
   theme(legend.position = "bottom") +
-  labs(y = "", x = "Time") +
+  labs(y = "", x = "Time", title = "Mean structure") +
   xlim(-1,1)
 
 timetiePower <- function(mm) {
@@ -52,14 +53,6 @@ timetiePower <- function(mm) {
 getDiffSlicesgg <- function(ff, ww, leg = FALSE) {
   rr <- readRDS(ff)
   
-  tt <- attributes(rr)[[1]]
-  
-  mt <- ifelse(tt$mm, "Heterogeneous Means\n ", "Homogeneous Means\n")
-  art <- ifelse(tt$ar, "AR(1) Error, ", "IID Error, ")
-  ars <- ifelse(tt$bcor, "AR(1) Specified", "AR(1) Not Specified")
-  
-  tit <- paste0(mt, art, ars)
-  
   sm <- lapply(rr, `[[`, 1)
   mm <- lapply(rr, `[[`, 2)
   pm <- lapply(rr, `[[`, 3)
@@ -75,17 +68,18 @@ getDiffSlicesgg <- function(ff, ww, leg = FALSE) {
   
   ll <- length(rr)
   
-  pp <- ggplot(dat, aes(Time, Power / 25, color = Method)) + theme_bw() + #ggtitle(tit) +
+  theme_set(theme_bw(base_size = 16))
+  pp <- ggplot(dat, aes(Time, Power / 25, color = Method)) + theme_bw() +
     geom_line(linewidth = 1) +
     geom_function(fun = Vectorize(function(x) {
       ifelse(x < 0, 0.05*ll, NA)
     }), color = 'red', linetype = "dashed", linewidth = 1.25) +
     geom_abline(slope = 1e5, intercept = 0, color = 'red', linetype = 'dashed',
                 linewidth = 1.25) + ylim(c(0, ll)) +
-    scale_color_manual(values = c("#00BFC4", "#7CAE00", "#C77CFF")) +
+    #scale_color_manual(values = c("#00BFC4", "#7CAE00", "#C77CFF")) +
     theme(legend.position = ifelse(leg, "bottom", "none")) +
     coord_cartesian(ylim = c(0,1)) +
-    labs(y = "Proportion")
+    labs(y = "Proportion", title = "Power over time")
   
   return(pp)
 }
@@ -101,6 +95,6 @@ ff <- list.files("~/Desktop/2025-map/map2025/new_scripts/new_power/power_rds/",
 
 plot2 <- getDiffSlicesgg(ff[4], 4, leg = TRUE)
 
-png("~/Desktop/2025-map/map2025/mean_structure_power_plot.png", width = 700, height = 300)
+png("~/Desktop/2025-map/map2025/mean_structure_power_plot.png", width = 800, height = 400)
 grid.arrange(plot1, plot2, ncol = 2)
 dev.off()
